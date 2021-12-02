@@ -1,43 +1,29 @@
 import React from "react";
 import styled from "styled-components";
+import { RandomUser } from "../type.d";
 
 interface TableProps {
-  datas?: Data[];
-}
-
-interface Data {
-  username: string;
-  name: string;
-  email: string;
-  gender: string;
-  registeredDate: string;
+  randomUsers: RandomUser[];
 }
 
 const Table = (props: TableProps) => {
-  const {
-    datas = [
-      {
-        username: "tes",
-        name: "tes1",
-        email: "tes@mail.com",
-        gender: "male",
-        registeredDate: "tes",
-      },
-    ],
-  } = props;
+  const { randomUsers } = props;
   const renderTableBody = () => {
-    if (!datas) return;
+    if (!randomUsers) return;
     return (
       <>
-        {datas.map((data: Data) => (
-          <CellRow>
-            <Cell>{data.username}</Cell>
-            <Cell>{data.name}</Cell>
-            <Cell>{data.email}</Cell>
-            <Cell>{data.gender}</Cell>
-            <Cell>{data.registeredDate}</Cell>
-          </CellRow>
-        ))}
+        {randomUsers?.map((randomUser: RandomUser) => {
+          let name = `${randomUser.name.title}. ${randomUser.name.first} ${randomUser.name.last}`;
+          return (
+            <CellRow>
+              <Cell>{randomUser.login.username}</Cell>
+              <Cell>{name}</Cell>
+              <Cell>{randomUser.email}</Cell>
+              <Cell>{randomUser.gender}</Cell>
+              <Cell>{randomUser.registered.date}</Cell>
+            </CellRow>
+          );
+        })}
       </>
     );
   };
@@ -51,6 +37,7 @@ const Table = (props: TableProps) => {
         <Cell isHeader={true}>Registered Date</Cell>
       </TableHeader>
       <TableBody>{renderTableBody()}</TableBody>
+      <TableBody></TableBody>
     </TableContainer>
   );
 };
@@ -70,7 +57,6 @@ const TableContainer = styled.div`
 
 const TableHeader = styled.div`
   width: 100%;
-  height: 2rem;
 
   display: flex;
   flex-direction: row;
@@ -94,6 +80,8 @@ const CellRow = styled.div`
   flex-direction: row;
   justify-content: center;
   align-items: center;
+
+  border-bottom: 1px solid black;
 `;
 
 const Cell = styled.div<{ isHeader?: boolean }>`
