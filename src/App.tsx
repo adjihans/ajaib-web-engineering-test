@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import SearchAndFilter from "./components/SearchAndFilter";
+import Table from "./components/Table";
 
 function App() {
   return (
@@ -8,6 +9,7 @@ function App() {
       <TitlePage>EXAMPLE WITH SEARCH AND FILTER</TitlePage>
       <SearchAndFilter />
       <Separator />
+      <Table />
     </Container>
   );
 }
