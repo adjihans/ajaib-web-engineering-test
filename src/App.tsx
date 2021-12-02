@@ -1,26 +1,39 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import styled from "styled-components";
+import SearchAndFilter from "./components/SearchAndFilter";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Container>
+      <TitlePage>EXAMPLE WITH SEARCH AND FILTER</TitlePage>
+      <SearchAndFilter />
+      <Separator />
+    </Container>
   );
 }
 
 export default App;
+
+const Container = styled.div`
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+
+  padding: 2rem;
+`;
+
+const TitlePage = styled.div`
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 600;
+  font-style: normal;
+`;
+
+const Separator = styled.div`
+  height: 0;
+  border: 1px solid gray;
+  width: 100%;
+`;
