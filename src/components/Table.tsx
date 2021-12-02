@@ -1,12 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import {
-  PaginationType,
-  RandomUser,
-  sortOrder,
-  SortInfo,
-  sortBy,
-} from "../type.d";
+import { PaginationType, RandomUser, sortOrder, SortInfo } from "../type.d";
 import SortTriangle from "./SortTriangle";
 
 interface TableProps {
