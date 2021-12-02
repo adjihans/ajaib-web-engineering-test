@@ -3,7 +3,14 @@ import styled from "styled-components";
 import SearchAndFilter from "./components/SearchAndFilter";
 import Table from "./components/Table";
 import { fetchUserPaginated } from "./services/fetchFunction";
-import { Gender, Option, PaginationType, RandomUser, SortInfo } from "./type.d";
+import {
+  Gender,
+  Option,
+  PaginationType,
+  RandomUser,
+  sortBy,
+  SortInfo,
+} from "./type.d";
 
 function App() {
   const [randomUsers, setRandomUsers] = useState<RandomUser[]>();
@@ -26,7 +33,7 @@ function App() {
       page: 1,
       keyword: keyword,
       gender: option.value,
-      sortBy: sort?.sortBy,
+      sortBy: sort?.sortType,
       sortOrder: sort?.sortOrder,
     };
     const result = await fetchUserPaginated(payload);
@@ -45,7 +52,7 @@ function App() {
       page: 1,
       keyword: keyword,
       gender: gender.value,
-      sortBy: sort?.sortBy,
+      sortBy: sort?.sortType,
       sortOrder: sort?.sortOrder,
     };
     const result = await fetchUserPaginated(payload);
@@ -57,6 +64,27 @@ function App() {
     setGender(genderOptions[0]);
     setKeyword("");
     setSort(null);
+  };
+
+  const handleOnClickSortButton = async (sortOrder: string) => {
+    let sortType = sortBy.ASC;
+    if (sortOrder === sort?.sortOrder)
+      sortType = sort.sortType === sortBy.ASC ? sortBy.DESC : sortBy.ASC;
+    setSort({
+      sortType,
+      sortOrder,
+    });
+    setIsLoading(true);
+    const payload = {
+      page: 1,
+      keyword: keyword,
+      gender: gender.value,
+      sortBy: sortType,
+      sortOrder: sortOrder,
+    };
+    const result = await fetchUserPaginated(payload);
+    setRandomUsers(result);
+    setIsLoading(false);
   };
 
   const handleOnChangePage = async (type: string, page?: number) => {
@@ -81,7 +109,7 @@ function App() {
       page: pageNumber,
       keyword: keyword,
       gender: gender.value,
-      sortBy: sort?.sortBy,
+      sortBy: sort?.sortType,
       sortOrder: sort?.sortOrder,
     };
     const result = await fetchUserPaginated(navigatePagePayload);
@@ -121,7 +149,9 @@ function App() {
           randomUsers={randomUsers}
           activePage={activePage}
           options={pageOptions}
+          sort={sort}
           handleOnChangePage={handleOnChangePage}
+          handleOnClickSortButton={handleOnClickSortButton}
         />
       )}
     </Container>

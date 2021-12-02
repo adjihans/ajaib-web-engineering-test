@@ -1,16 +1,32 @@
 import React from "react";
 import styled from "styled-components";
-import { PaginationType, RandomUser } from "../type.d";
+import {
+  PaginationType,
+  RandomUser,
+  sortOrder,
+  SortInfo,
+  sortBy,
+} from "../type.d";
+import SortTriangle from "./SortTriangle";
 
 interface TableProps {
   randomUsers: RandomUser[];
   activePage: number;
   options: number[];
   handleOnChangePage: (type: string, page?: number) => void;
+  sort: SortInfo | null;
+  handleOnClickSortButton: (sortOrder: string) => void;
 }
 
 const Table = (props: TableProps) => {
-  const { randomUsers, activePage, options, handleOnChangePage } = props;
+  const {
+    randomUsers,
+    activePage,
+    options,
+    handleOnChangePage,
+    sort,
+    handleOnClickSortButton,
+  } = props;
   const renderTableBody = () => {
     if (!randomUsers) return;
     return (
@@ -20,10 +36,10 @@ const Table = (props: TableProps) => {
           return (
             <CellRow>
               <Cell>{randomUser.login.username}</Cell>
-              <Cell>{name}</Cell>
-              <Cell>{randomUser.email}</Cell>
-              <Cell>{randomUser.gender}</Cell>
-              <Cell>{randomUser.registered.date}</Cell>
+              <Cell>{name} </Cell>
+              <Cell>{randomUser.email} </Cell>
+              <Cell>{randomUser.gender} </Cell>
+              <Cell>{randomUser.registered.date} </Cell>
             </CellRow>
           );
         })}
@@ -56,10 +72,42 @@ const Table = (props: TableProps) => {
     <TableContainer>
       <TableHeader>
         <Cell isHeader={true}>Username</Cell>
-        <Cell isHeader={true}>Name</Cell>
-        <Cell isHeader={true}>Email</Cell>
-        <Cell isHeader={true}>Gender</Cell>
-        <Cell isHeader={true}>Registered Date</Cell>
+        <Cell isHeader={true}>
+          Name{" "}
+          <div onClick={() => handleOnClickSortButton(sortOrder.NAME)}>
+            <SortTriangle
+              sortType={sort?.sortType}
+              sortStatus={sort?.sortOrder === sortOrder.NAME}
+            />
+          </div>
+        </Cell>
+        <Cell isHeader={true}>
+          Email
+          <div onClick={() => handleOnClickSortButton(sortOrder.EMAIL)}>
+            <SortTriangle
+              sortType={sort?.sortType}
+              sortStatus={sort?.sortOrder === sortOrder.EMAIL}
+            />
+          </div>
+        </Cell>
+        <Cell isHeader={true}>
+          Gender{" "}
+          <div onClick={() => handleOnClickSortButton(sortOrder.GENDER)}>
+            <SortTriangle
+              sortType={sort?.sortType}
+              sortStatus={sort?.sortOrder === sortOrder.GENDER}
+            />
+          </div>
+        </Cell>
+        <Cell isHeader={true}>
+          Registered Date{" "}
+          <div onClick={() => handleOnClickSortButton(sortOrder.REGISTERED)}>
+            <SortTriangle
+              sortType={sort?.sortType}
+              sortStatus={sort?.sortOrder === sortOrder.REGISTERED}
+            />
+          </div>
+        </Cell>
       </TableHeader>
       <TableBody>{renderTableBody()}</TableBody>
       <PaginationSelection>{renderPaginatedSelection()}</PaginationSelection>
@@ -144,6 +192,7 @@ const Cell = styled.div<{ isHeader?: boolean }>`
   padding: 1rem;
 
   display: flex;
-  justify-content: flex-start;
+  justify-content: ${({ isHeader }) =>
+    isHeader ? "space-between" : "flex-start"};
   align-items: center;
 `;

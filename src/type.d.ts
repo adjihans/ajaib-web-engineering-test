@@ -57,6 +57,18 @@ export interface Option {
 }
 
 export interface SortInfo {
-  sortBy: string;
+  sortType: sortBy.ASC | sortBy.DESC;
   sortOrder: string;
+}
+
+export enum sortBy {
+  ASC = "ascend",
+  DESC = "descend",
+}
+
+export enum sortOrder {
+  NAME = "name",
+  EMAIL = "email",
+  GENDER = "gender",
+  REGISTERED = "registered",
 }
