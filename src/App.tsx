@@ -3,11 +3,36 @@ import styled from "styled-components";
 import SearchAndFilter from "./components/SearchAndFilter";
 import Table from "./components/Table";
 import { fetchUserPaginated } from "./services/fetchFunction";
-import { RandomUser } from "./type.d";
+import { PaginationType, RandomUser } from "./type.d";
 
 function App() {
   const [randomUsers, setRandomUsers] = useState<RandomUser[]>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [activePage, setActivePage] = useState<number>(1);
+  const pageOptions = [1, 2, 3];
+
+  const handleOnChangePage = async (type: string, page?: number) => {
+    setIsLoading(true);
+    let pageNumber = 0;
+    switch (type) {
+      case PaginationType.INCREMENT:
+        if (activePage === pageOptions[0]) return;
+        pageNumber = activePage + 1;
+        setActivePage(activePage + 1);
+        break;
+      case PaginationType.DECREMENT:
+        if (activePage === pageOptions[pageOptions.length - 1]) return;
+        pageNumber = activePage - 1;
+        setActivePage(activePage - 1);
+        break;
+      default:
+        pageNumber = page!;
+        setActivePage(page!);
+    }
+    const result = await fetchUserPaginated(pageNumber);
+    setRandomUsers(result);
+    setIsLoading(false);
+  };
 
   const componentDidMount = async () => {
     setIsLoading(true);
@@ -29,7 +54,12 @@ function App() {
       {isLoading || !randomUsers?.length ? (
         <>Loading...</>
       ) : (
-        <Table randomUsers={randomUsers} />
+        <Table
+          randomUsers={randomUsers}
+          activePage={activePage}
+          options={pageOptions}
+          handleOnChangePage={handleOnChangePage}
+        />
       )}
     </Container>
   );

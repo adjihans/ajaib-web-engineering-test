@@ -38,3 +38,9 @@ interface Registered {
   date: string;
   age: number;
 }
+
+export enum PaginationType {
+  INCREMENT = "INCREMENT",
+  DECREMENT = "DECREMENT",
+  NUMBER = "NUMBER",
+}

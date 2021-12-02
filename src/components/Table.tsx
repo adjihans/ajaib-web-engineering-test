@@ -1,13 +1,16 @@
 import React from "react";
 import styled from "styled-components";
-import { RandomUser } from "../type.d";
+import { PaginationType, RandomUser } from "../type.d";
 
 interface TableProps {
   randomUsers: RandomUser[];
+  activePage: number;
+  options: number[];
+  handleOnChangePage: (type: string, page?: number) => void;
 }
 
 const Table = (props: TableProps) => {
-  const { randomUsers } = props;
+  const { randomUsers, activePage, options, handleOnChangePage } = props;
   const renderTableBody = () => {
     if (!randomUsers) return;
     return (
@@ -27,6 +30,28 @@ const Table = (props: TableProps) => {
       </>
     );
   };
+
+  const renderPaginatedSelection = () => {
+    return (
+      <>
+        <Paginated onClick={() => handleOnChangePage(PaginationType.DECREMENT)}>
+          {"<"}
+        </Paginated>
+        {options.map((option: number) => (
+          <Paginated
+            isActive={activePage === option}
+            onClick={() => handleOnChangePage(PaginationType.NUMBER, option)}
+          >
+            {option}
+          </Paginated>
+        ))}
+        <Paginated onClick={() => handleOnChangePage(PaginationType.INCREMENT)}>
+          {">"}
+        </Paginated>
+      </>
+    );
+  };
+
   return (
     <TableContainer>
       <TableHeader>
@@ -37,7 +62,7 @@ const Table = (props: TableProps) => {
         <Cell isHeader={true}>Registered Date</Cell>
       </TableHeader>
       <TableBody>{renderTableBody()}</TableBody>
-      <TableBody></TableBody>
+      <PaginationSelection>{renderPaginatedSelection()}</PaginationSelection>
     </TableContainer>
   );
 };
@@ -82,6 +107,33 @@ const CellRow = styled.div`
   align-items: center;
 
   border-bottom: 1px solid black;
+`;
+
+const PaginationSelection = styled.div`
+  width: 100%;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+`;
+
+const Paginated = styled.div<{ isActive?: boolean }>`
+  width: 2rem;
+  height: 2rem;
+  margin: 0.5rem 0.5rem;
+
+  cursor: pointer;
+
+  border: 1px solid #fafafa;
+  border-radius: 3px;
+
+  color: ${({ isActive }) => (isActive ? "#574FCF" : "#000000")};
+  border-color: ${({ isActive }) => (isActive ? "#574FCF" : "#000000")};
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const Cell = styled.div<{ isHeader?: boolean }>`
