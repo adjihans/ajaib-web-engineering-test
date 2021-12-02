@@ -44,3 +44,19 @@ export enum PaginationType {
   DECREMENT = "DECREMENT",
   NUMBER = "NUMBER",
 }
+
+export enum Gender {
+  ALL = "",
+  MALE = "male",
+  FEMALE = "female",
+}
+
+export interface Option {
+  label: string;
+  value: any;
+}
+
+export interface SortInfo {
+  sortBy: string;
+  sortOrder: string;
+}

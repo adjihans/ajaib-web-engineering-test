@@ -1,21 +1,42 @@
-import React from "react";
+import React, { ChangeEvent } from "react";
 import styled from "styled-components";
 import SearchLogo from "../assets/search.svg";
 import Select from "react-select";
+import { Option } from "../type";
 
-const SearchAndFilter = () => {
-  const genderOptions = [
-    { label: "All", value: "null" },
-    { label: "Female", value: "female" },
-    { label: "Male", value: "male" },
-  ];
+interface SearchAndFilterProps {
+  genderOptions: Option[];
+  gender: Option;
+  keyword: string;
+  handleOnSelectGender: (option: Option) => void;
+  handleOnClickResetButton: () => void;
+  handleOnClickSearchButton: () => void;
+  handleOnChangeInputForm: (event: ChangeEvent<HTMLInputElement>) => void;
+}
+
+const SearchAndFilter = (props: SearchAndFilterProps) => {
+  const {
+    genderOptions,
+    gender,
+    keyword,
+    handleOnSelectGender,
+    handleOnClickResetButton,
+    handleOnClickSearchButton,
+    handleOnChangeInputForm,
+  } = props;
   return (
     <FilterContainer>
       <FilterSection>
         <div>Search</div>
         <Form>
-          <InputForm placeholder="Search..." />
-          <SearchButton>
+          <InputForm
+            placeholder="Search..."
+            value={keyword}
+            onChange={(event: ChangeEvent<HTMLInputElement>) =>
+              handleOnChangeInputForm(event)
+            }
+          />
+          <SearchButton onClick={handleOnClickSearchButton}>
             <Search src={SearchLogo} alt="search-logo" />
           </SearchButton>
         </Form>
@@ -23,8 +44,15 @@ const SearchAndFilter = () => {
       <FilterSection>
         <div>Gender</div>
         <GenderFilterSection>
-          <Select styles={genderSelectionStyle} options={genderOptions} />
-          <ResetButton>Reset Filter</ResetButton>
+          <Select
+            styles={genderSelectionStyle}
+            options={genderOptions}
+            value={gender}
+            onChange={(value: any) => handleOnSelectGender(value)}
+          />
+          <ResetButton onClick={handleOnClickResetButton}>
+            Reset Filter
+          </ResetButton>
         </GenderFilterSection>
       </FilterSection>
     </FilterContainer>
@@ -66,11 +94,12 @@ const Form = styled.form`
   border: 1px solid gray;
 `;
 
-const InputForm = styled.div`
+const InputForm = styled.input`
   height: 2rem;
   width: 15rem;
 
   cursor: text;
+  border: none;
 `;
 
 const SearchButton = styled.div`
@@ -81,8 +110,8 @@ const SearchButton = styled.div`
   justify-content: center;
   align-items: center;
 
-  height: 2rem;
-  width: 2rem;
+  height: 2.2rem;
+  width: 2.2rem;
 
   cursor: pointer;
 `;

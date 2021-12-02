@@ -1,15 +1,63 @@
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import styled from "styled-components";
 import SearchAndFilter from "./components/SearchAndFilter";
 import Table from "./components/Table";
 import { fetchUserPaginated } from "./services/fetchFunction";
-import { PaginationType, RandomUser } from "./type.d";
+import { Gender, Option, PaginationType, RandomUser, SortInfo } from "./type.d";
 
 function App() {
   const [randomUsers, setRandomUsers] = useState<RandomUser[]>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [activePage, setActivePage] = useState<number>(1);
   const pageOptions = [1, 2, 3];
+  const genderOptions = [
+    { label: "All", value: Gender.ALL },
+    { label: "female", value: Gender.FEMALE },
+    { label: "male", value: Gender.MALE },
+  ];
+  const [gender, setGender] = useState<Option>(genderOptions[0]);
+  const [keyword, setKeyword] = useState<string>("");
+  const [sort, setSort] = useState<SortInfo | null>(null);
+
+  const handleOnSelectGender = async (option: Option) => {
+    setIsLoading(true);
+    setGender(option);
+    const payload = {
+      page: 1,
+      keyword: keyword,
+      gender: option.value,
+      sortBy: sort?.sortBy,
+      sortOrder: sort?.sortOrder,
+    };
+    const result = await fetchUserPaginated(payload);
+    setRandomUsers(result);
+    setIsLoading(false);
+  };
+
+  const handleOnChangeInputForm = (event: any) => {
+    const newKeywords = event.target.value;
+    setKeyword(newKeywords);
+  };
+
+  const handleOnClickSearchButton = async () => {
+    setIsLoading(true);
+    const payload = {
+      page: 1,
+      keyword: keyword,
+      gender: gender.value,
+      sortBy: sort?.sortBy,
+      sortOrder: sort?.sortOrder,
+    };
+    const result = await fetchUserPaginated(payload);
+    setRandomUsers(result);
+    setIsLoading(false);
+  };
+
+  const handleOnClickResetButton = () => {
+    setGender(genderOptions[0]);
+    setKeyword("");
+    setSort(null);
+  };
 
   const handleOnChangePage = async (type: string, page?: number) => {
     setIsLoading(true);
@@ -29,7 +77,14 @@ function App() {
         pageNumber = page!;
         setActivePage(page!);
     }
-    const result = await fetchUserPaginated(pageNumber);
+    const navigatePagePayload = {
+      page: pageNumber,
+      keyword: keyword,
+      gender: gender.value,
+      sortBy: sort?.sortBy,
+      sortOrder: sort?.sortOrder,
+    };
+    const result = await fetchUserPaginated(navigatePagePayload);
     setRandomUsers(result);
     setIsLoading(false);
   };
@@ -37,7 +92,7 @@ function App() {
   const componentDidMount = async () => {
     setIsLoading(true);
     // default GET first page
-    const result = await fetchUserPaginated(1);
+    const result = await fetchUserPaginated({ page: 1 });
     setRandomUsers(result);
     setIsLoading(false);
   };
@@ -49,7 +104,15 @@ function App() {
   return (
     <Container>
       <TitlePage>EXAMPLE WITH SEARCH AND FILTER</TitlePage>
-      <SearchAndFilter />
+      <SearchAndFilter
+        genderOptions={genderOptions}
+        gender={gender}
+        keyword={keyword}
+        handleOnSelectGender={handleOnSelectGender}
+        handleOnClickResetButton={handleOnClickResetButton}
+        handleOnClickSearchButton={handleOnClickSearchButton}
+        handleOnChangeInputForm={handleOnChangeInputForm}
+      />
       <Separator />
       {isLoading || !randomUsers?.length ? (
         <>Loading...</>
